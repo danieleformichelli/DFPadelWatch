@@ -1,28 +1,27 @@
 import ComposableArchitecture
 import Match
+import MatchSettings
+import Models
 import SwiftUI
 
 @main
 struct DFPadelApp: App {
-  let store = Store(initialState: .init(matches: []), reducer: DFPadel())
+  let store = Store(initialState: .init(), reducer: DFPadel())
 
   public var body: some Scene {
     WindowGroup {
       WithViewStore(self.store) { viewStore in
         Group {
-          if viewStore.shouldShowMatch {
-            MatchView(
-              store: .init(
-                initialState: .init(match: .init(
-                  teamA: .init(playerA: .init(name: "GIF"), playerB: .init(name: "MC")),
-                  teamB: .init(playerA: .init(name: "DF"), playerB: .init(name: "DF")),
-                  deuce: .golden
-                )),
-                reducer: MatchFeature()
-              )
-            )
+          if let match = viewStore.shouldShowMatchSettings {
+            MatchSettingsView(store: self.store.scope(
+              state: { _ in .init(match: match, players: viewStore.players) },
+              action: { .matchSettings($0) }
+            ))
+          } else if let match = viewStore.currentMatch {
+            MatchView(store: .init(initialState: .init(match: match), reducer: MatchFeature()))
           } else {
-            Button("New match", action: { viewStore.send(.newMatch) })
+            Button("New match", action: { viewStore.send(.didTapNewMatch) })
+            Button("History", action: { viewStore.send(.didTapHistory) })
           }
         }
       }
@@ -31,11 +30,22 @@ struct DFPadelApp: App {
 }
 
 extension DFPadel.State {
-  var shouldShowMatch: Bool {
-    if let lastMatch = self.matches.last, lastMatch.winner == nil {
-      return true
+  var currentMatch: Match? {
+    if let lastMatch = self.matches.values.sorted(by: { $0.creationDate > $1.creationDate }).last, lastMatch.winner == nil {
+      return lastMatch
     } else {
-      return false
+      return nil
+    }
+  }
+
+  var shouldShowMatchSettings: Match? {
+    switch self.matchSettings {
+    case .newMatch:
+      return .init(teamA: .init(playerA: "", playerB: ""), teamB: .init(playerA: "", playerB: ""), deuce: .golden)
+    case .editMatch(let id):
+      return self.matches[id]
+    case .none:
+      return nil
     }
   }
 }

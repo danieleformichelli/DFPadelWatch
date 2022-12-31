@@ -2,15 +2,25 @@ import Models
 import SwiftUI
 
 public struct TeamButton: View {
-  let team: Team
+  let playerA: String
+  let playerB: String
   let points: Int
   let tieBreak: Bool
   let servingPlayer: Turn?
   let winner: Bool?
   let action: () -> Void
 
-  public init(team: Team, points: Int, tieBreak: Bool, servingPlayer: Turn?, winner: Bool?, action: @escaping () -> Void) {
-    self.team = team
+  public init(
+    playerA: String,
+    playerB: String,
+    points: Int,
+    tieBreak: Bool,
+    servingPlayer: Turn?,
+    winner: Bool?,
+    action: @escaping () -> Void
+  ) {
+    self.playerA = playerA
+    self.playerB = playerB
     self.points = points
     self.tieBreak = tieBreak
     self.servingPlayer = servingPlayer
@@ -49,8 +59,8 @@ public struct TeamButton: View {
         Text(self.pointsValue)
           .font(.system(size: 48))
           .foregroundColor(.primary)
-        Text(self.team.playerA.name).foregroundColor(self.servingPlayer == .a ? .primary : .secondary)
-        Text(self.team.playerB.name).foregroundColor(self.servingPlayer == .b ? .primary : .secondary)
+        Text(self.playerA).foregroundColor(self.servingPlayer == .a ? .primary : .secondary)
+        Text(self.playerB).foregroundColor(self.servingPlayer == .b ? .primary : .secondary)
       }
     }
     .buttonStyle(BorderlessButtonStyle())
@@ -60,7 +70,8 @@ public struct TeamButton: View {
 struct TeamButton_Previews: PreviewProvider {
     static var previews: some View {
       TeamButton(
-        team: .init(playerA: .init(name: "A"), playerB: .init(name: "B")),
+        playerA: "A",
+        playerB: "B",
         points: 2,
         tieBreak: false,
         servingPlayer: .a,

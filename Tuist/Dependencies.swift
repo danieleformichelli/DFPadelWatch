@@ -14,6 +14,7 @@ let dependencies = Dependencies(
       "CustomDump": .framework,
       "Dependencies": .framework,
       "IdentifiedCollections": .framework,
+      "OrderedCollections": .framework,
       "XCTestDynamicOverlay": .framework,
       "_SwiftUINavigationState": .framework,
     ]

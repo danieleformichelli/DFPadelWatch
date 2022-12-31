@@ -37,6 +37,33 @@ let matchTests = Target(
   ]
 )
 
+let matchSettings = Target(
+  name: "MatchSettings",
+  platform: .watchOS,
+  product: .framework,
+  bundleId: "DFPadel.MatchSettings",
+  sources: [
+    "Features/MatchSettings/Sources/**/*.swift"
+  ],
+  dependencies: [
+    .external(name: "ComposableArchitecture"),
+    .target(models),
+  ]
+)
+
+let matchSettingsTests = Target(
+  name: "MatchSettingsTests",
+  platform: .watchOS,
+  product: .unitTests,
+  bundleId: "DFPadel.MatchSettings.Tests",
+  sources: [
+    "Features/MatchSettings/Tests/**/*.swift"
+  ],
+  dependencies: [
+    .target(matchSettings),
+  ]
+)
+
 let mainTarget = Target(
   name: "DFPadelWatchOS",
   platform: .watchOS,
@@ -48,6 +75,7 @@ let mainTarget = Target(
   dependencies: [
     .external(name: "ComposableArchitecture"),
     .target(match),
+    .target(matchSettings),
     .target(models),
   ],
   settings: .settings(
@@ -81,6 +109,9 @@ let project = Project(
     mainTarget,
     mainIOSTarget,
     match,
+    matchSettings,
+    matchTests,
+    matchSettingsTests,
     models,
   ],
   additionalFiles: [

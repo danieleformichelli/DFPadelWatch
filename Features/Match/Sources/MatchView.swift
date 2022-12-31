@@ -25,7 +25,7 @@ public struct MatchView: View {
           .frame(minWidth: 0, maxWidth: .infinity)
           HStack {
             Spacer()
-            Button { viewStore.send(.undo)} label: {
+            Button { viewStore.send(.didTapUndo)} label: {
               Image(systemName: "arrow.uturn.backward.square")
             }
             .buttonStyle(BorderlessButtonStyle())
@@ -41,22 +41,24 @@ public struct MatchView: View {
         HStack(spacing: 0) {
           Spacer()
           TeamButton(
-            team: viewStore.match.teamA,
+            playerA: viewStore.match.teamA.playerA,
+            playerB: viewStore.match.teamB.playerB,
             points: viewStore.match.sets.last?.games.last?.points.filter { $0 == .a }.count ?? 0,
             tieBreak: viewStore.match.sets.last?.isAtTieBreak ?? false,
             servingPlayer: viewStore.match.servingTeam == .a ? viewStore.match.servingPlayer : nil,
             winner: viewStore.match.winner.map { $0 == .a },
-            action: { viewStore.send(.point(.a)) }
+            action: { viewStore.send(.didTapAddPoint(.a)) }
           )
           .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
           Spacer()
           TeamButton(
-            team: viewStore.match.teamB,
+            playerA: viewStore.match.teamA.playerA,
+            playerB: viewStore.match.teamB.playerB,
             points: viewStore.match.sets.last?.games.last?.points.filter { $0 == .b }.count ?? 0,
             tieBreak: viewStore.match.sets.last?.isAtTieBreak ?? false,
             servingPlayer: viewStore.match.servingTeam == .b ? viewStore.match.servingPlayer : nil,
             winner: viewStore.match.winner.map { $0 == .b },
-            action: { viewStore.send(.point(.b)) }
+            action: { viewStore.send(.didTapAddPoint(.b)) }
           )
           .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
           Spacer()
@@ -72,8 +74,8 @@ struct MatchView_Previews: PreviewProvider {
       MatchView(
         store: .init(
           initialState: .init(match: .init(
-            teamA: .init(playerA: .init(name: "GIF"), playerB: .init(name: "MC")),
-            teamB: .init(playerA: .init(name: "DF"), playerB: .init(name: "DF")),
+            teamA: .init(playerA: "GIF", playerB: "MC"),
+            teamB: .init(playerA: "DF", playerB: "DF"),
             deuce: .golden
           )),
           reducer: MatchFeature()

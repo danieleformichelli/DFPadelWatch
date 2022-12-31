@@ -7,7 +7,7 @@ public struct MatchFeature: ReducerProtocol {
 
   public struct State: Equatable {
     var error: String?
-    var match: Match
+    let match: Match
 
     public init(error: String? = nil, match: Match) {
       self.error = error
@@ -16,9 +16,10 @@ public struct MatchFeature: ReducerProtocol {
   }
 
   public enum Action: Equatable {
-    case clearError
-    case point(Turn)
-    case undo
+    case didTapAddPoint(Turn)
+    case didTapUndo
+    case handleClearError
+    case handleUpdateMatch(Match)
   }
 
   enum Error: LocalizedError {
@@ -44,20 +45,28 @@ public struct MatchFeature: ReducerProtocol {
   public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
     do {
       switch action {
-      case .clearError:
-        state.error = nil
-      case .point(let turn):
-        try state.match.addPoint(to: turn)
-      case .undo:
-        if !state.match.undo() {
+      case .didTapAddPoint(let turn):
+        var updatedMatch = state.match
+        try updatedMatch.addPoint(to: turn)
+        return Effect(value: Action.handleUpdateMatch(updatedMatch))
+      case .didTapUndo:
+        var updatedMatch = state.match
+        if !updatedMatch.undo() {
           throw Error.canNotUndo
         }
+        return Effect(value: Action.handleUpdateMatch(updatedMatch))
+      case .handleClearError:
+        state.error = nil
+        return .none
+      case .handleUpdateMatch:
+        // handled outside
+        return .none
       }
     } catch let error {
       state.error = "\(error)"
+      return .none
     }
 
-    return .none
   }
 }
 
