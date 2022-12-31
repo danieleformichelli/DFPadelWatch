@@ -1,68 +1,36 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 
-let models = Target(
-  name: "Models",
-  platform: .watchOS,
-  product: .framework,
-  bundleId: "DFPadel.Models",
-  sources: [
-    "Features/Models/Sources/**/*.swift"
-  ]
-)
+let models = Feature(name: "Models")
 
-let match = Target(
+let shared = Feature(name: "Shared")
+
+let match = Feature(
   name: "Match",
-  platform: .watchOS,
-  product: .framework,
-  bundleId: "DFPadel.Match",
-  sources: [
-    "Features/Match/Sources/**/*.swift"
-  ],
+  hasTests: true,
   dependencies: [
-    .external(name: "ComposableArchitecture"),
-    .target(models),
+    .composableArchitecture,
+    .feature(models),
+    .feature(shared),
   ]
 )
 
-let matchTests = Target(
-  name: "MatchTests",
-  platform: .watchOS,
-  product: .unitTests,
-  bundleId: "DFPadel.Match.Tests",
-  sources: [
-    "Features/Match/Tests/**/*.swift"
-  ],
-  dependencies: [
-    .target(match),
-  ]
-)
-
-let matchSettings = Target(
+let matchSettings = Feature(
   name: "MatchSettings",
-  platform: .watchOS,
-  product: .framework,
-  bundleId: "DFPadel.MatchSettings",
-  sources: [
-    "Features/MatchSettings/Sources/**/*.swift"
-  ],
+  hasTests: true,
   dependencies: [
-    .external(name: "ComposableArchitecture"),
-    .target(models),
+    .composableArchitecture,
+    .feature(models),
+    .feature(shared),
   ]
 )
 
-let matchSettingsTests = Target(
-  name: "MatchSettingsTests",
-  platform: .watchOS,
-  product: .unitTests,
-  bundleId: "DFPadel.MatchSettings.Tests",
-  sources: [
-    "Features/MatchSettings/Tests/**/*.swift"
-  ],
-  dependencies: [
-    .target(matchSettings),
-  ]
-)
+let allFeatures = [
+  models,
+  shared,
+  match,
+  matchSettings,
+]
 
 let mainTarget = Target(
   name: "DFPadelWatchOS",
@@ -73,10 +41,10 @@ let mainTarget = Target(
     "MainTarget/WatchOS/Sources/**/*.swift"
   ],
   dependencies: [
-    .external(name: "ComposableArchitecture"),
-    .target(match),
-    .target(matchSettings),
-    .target(models),
+    .composableArchitecture,
+    .feature(match),
+    .feature(matchSettings),
+    .feature(models),
   ],
   settings: .settings(
     base: [
@@ -108,12 +76,7 @@ let project = Project(
   targets: [
     mainTarget,
     mainIOSTarget,
-    match,
-    matchSettings,
-    matchTests,
-    matchSettingsTests,
-    models,
-  ],
+  ] + allFeatures.allTargets,
   additionalFiles: [
     "prepare.sh",
     "README.md"

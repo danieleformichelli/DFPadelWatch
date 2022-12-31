@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Foundation
 import Models
+import Shared
 
 public struct MatchFeature: ReducerProtocol {
   public init() {}
@@ -15,11 +16,23 @@ public struct MatchFeature: ReducerProtocol {
     }
   }
 
-  public enum Action: Equatable {
-    case didTapAddPoint(Turn)
-    case didTapUndo
-    case handleClearError
-    case handleUpdateMatch(Match)
+  public enum Action: FeatureAction, Equatable {
+    public enum Input: Equatable {
+      case didTapAddPoint(Turn)
+      case didTapUndo
+    }
+
+    public enum Module: Equatable {
+      case handleClearError(Match)
+    }
+
+    public enum Delegate: Equatable {
+      case handleUpdateMatch(Match)
+    }
+
+    case input(Input)
+    case module(Module)
+    case delegate(Delegate)
   }
 
   enum Error: LocalizedError {
@@ -45,21 +58,26 @@ public struct MatchFeature: ReducerProtocol {
   public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
     do {
       switch action {
-      case .didTapAddPoint(let turn):
-        var updatedMatch = state.match
-        try updatedMatch.addPoint(to: turn)
-        return Effect(value: Action.handleUpdateMatch(updatedMatch))
-      case .didTapUndo:
-        var updatedMatch = state.match
-        if !updatedMatch.undo() {
-          throw Error.canNotUndo
+      case .input(let inputAction):
+        switch inputAction {
+        case .didTapAddPoint(let turn):
+          var updatedMatch = state.match
+          try updatedMatch.addPoint(to: turn)
+          return Effect(value: Action.delegate(.handleUpdateMatch(updatedMatch)))
+        case .didTapUndo:
+          var updatedMatch = state.match
+          if !updatedMatch.undo() {
+            throw Error.canNotUndo
+          }
+          return Effect(value: Action.delegate(.handleUpdateMatch(updatedMatch)))
         }
-        return Effect(value: Action.handleUpdateMatch(updatedMatch))
-      case .handleClearError:
-        state.error = nil
-        return .none
-      case .handleUpdateMatch:
-        // handled outside
+      case .module(let moduleAction):
+        switch moduleAction {
+        case .handleClearError:
+          state.error = nil
+          return .none
+        }
+      case .delegate:
         return .none
       }
     } catch let error {

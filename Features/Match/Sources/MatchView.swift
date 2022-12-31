@@ -25,7 +25,7 @@ public struct MatchView: View {
           .frame(minWidth: 0, maxWidth: .infinity)
           HStack {
             Spacer()
-            Button { viewStore.send(.didTapUndo)} label: {
+            Button { viewStore.send(.input(.didTapUndo))} label: {
               Image(systemName: "arrow.uturn.backward.square")
             }
             .buttonStyle(BorderlessButtonStyle())
@@ -47,7 +47,7 @@ public struct MatchView: View {
             tieBreak: viewStore.match.sets.last?.isAtTieBreak ?? false,
             servingPlayer: viewStore.match.servingTeam == .a ? viewStore.match.servingPlayer : nil,
             winner: viewStore.match.winner.map { $0 == .a },
-            action: { viewStore.send(.didTapAddPoint(.a)) }
+            action: { viewStore.send(.input(.didTapAddPoint(.a))) }
           )
           .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
           Spacer()
@@ -58,7 +58,7 @@ public struct MatchView: View {
             tieBreak: viewStore.match.sets.last?.isAtTieBreak ?? false,
             servingPlayer: viewStore.match.servingTeam == .b ? viewStore.match.servingPlayer : nil,
             winner: viewStore.match.winner.map { $0 == .b },
-            action: { viewStore.send(.didTapAddPoint(.b)) }
+            action: { viewStore.send(.input(.didTapAddPoint(.a))) }
           )
           .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
           Spacer()

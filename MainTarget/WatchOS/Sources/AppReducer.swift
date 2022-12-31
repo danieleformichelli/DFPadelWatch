@@ -35,22 +35,34 @@ struct DFPadel: ReducerProtocol {
       return .none
     case .didTapHistory:
       return .none
-    case .match:
-      return .none
+    case .match(let matchAction):
+      switch matchAction {
+      case .input, .module:
+        return .none
+      case .delegate(let delegateAction):
+        switch delegateAction {
+        case .handleUpdateMatch(let match):
+          state.matches[match.id] = match
+          return .none
+        }
+      }
     case .matchSettings(let matchSettingsAction):
       switch matchSettingsAction {
-      case .didSetPlayer, .didSetDeuce:
-        break
-      case .didTapSave(let match):
-        state.matchSettings = nil
-        state.matches[match.id] = match
-      case .didTapCancel:
-        state.matchSettings = nil
-      case .didTapDelete(let matchID):
-        state.matchSettings = nil
-        state.matches[matchID] = nil
+      case .input:
+        return .none
+      case .delegate(let delegateAction):
+        switch delegateAction {
+        case .handleSaveMatch(let match):
+          state.matchSettings = nil
+          state.matches[match.id] = match
+        case .handleCancelEditMatch:
+          state.matchSettings = nil
+        case .handleDeleteMatch(let matchID):
+          state.matchSettings = nil
+          state.matches[matchID] = nil
+        }
+        return .none
       }
-      return .none
     }
   }
 }

@@ -18,7 +18,7 @@ public struct MatchSettingsView: View {
             Picker(
               selection: viewStore.binding(
                 get: { $0.players[$0.match.teamA.playerA]?.name ?? "Player A" },
-                send: { .didSetPlayer(team: .a, player: .a, id: $0) }
+                send: { .input(.didChangePlayer(team: .a, player: .a, id: $0)) }
               ),
               label: EmptyView()
             ) {
@@ -35,7 +35,7 @@ public struct MatchSettingsView: View {
             Picker(
               selection: viewStore.binding(
                 get: { $0.players[$0.match.teamA.playerB]?.name ?? "Player B" },
-                send: { .didSetPlayer(team: .a, player: .b, id: $0) }
+                send: { .input(.didChangePlayer(team: .a, player: .b, id: $0)) }
               ),
               label: EmptyView()
             ) {
@@ -54,7 +54,7 @@ public struct MatchSettingsView: View {
             Picker(
               selection: viewStore.binding(
                 get: { $0.players[$0.match.teamB.playerA]?.name ?? "Player A" },
-                send: { .didSetPlayer(team: .b, player: .a, id: $0) }
+                send: { .input(.didChangePlayer(team: .b, player: .a, id: $0)) }
               ),
               label: EmptyView()
             ) {
@@ -70,7 +70,7 @@ public struct MatchSettingsView: View {
             Picker(
               selection: viewStore.binding(
                 get: { $0.players[$0.match.teamB.playerB]?.name ?? "Player B" },
-                send: { .didSetPlayer(team: .b, player: .b, id: $0) }
+                send: { .input(.didChangePlayer(team: .b, player: .b, id: $0)) }
               ),
               label: EmptyView()
             ) {
@@ -87,7 +87,7 @@ public struct MatchSettingsView: View {
         }
         Picker("Deuce", selection: viewStore.binding(
           get: \.match.deuce,
-          send: { .didSetDeuce($0) }
+          send: { .input(.didChangeDeuce($0)) }
         )) {
           ForEach(Deuce.allCases, id: \.self) { deuce in
             HStack {
@@ -99,15 +99,15 @@ public struct MatchSettingsView: View {
         .pickerStyle(.navigationLink)
         .frame(height: 50)
         HStack {
-          Button { viewStore.send(.didTapSave(viewStore.match)) } label: {
+          Button { viewStore.send(.input(.didTapSave)) } label: {
             Image(systemName: "checkmark.circle.fill")
               .foregroundColor(.green)
           }
-          Button { viewStore.send(.didTapCancel) } label: {
+          Button { viewStore.send(.input(.didTapCancel)) } label: {
             Image(systemName: "arrow.uturn.backward")
               .foregroundColor(.secondary)
           }
-          Button { viewStore.send(.didTapDelete(viewStore.match.id)) } label: {
+          Button { viewStore.send(.input(.didTapDelete)) } label: {
             Image(systemName: "trash.fill")
               .foregroundColor(.red)
           }
