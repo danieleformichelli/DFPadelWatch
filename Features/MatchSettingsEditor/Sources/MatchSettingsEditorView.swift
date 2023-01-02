@@ -2,10 +2,10 @@ import ComposableArchitecture
 import Models
 import SwiftUI
 
-public struct MatchSettingsView: View {
-  let store: StoreOf<MatchSettingsFeature>
+public struct MatchSettingsEditorView: View {
+  let store: StoreOf<MatchSettingsEditor>
 
-  public init(store: StoreOf<MatchSettingsFeature>) {
+  public init(store: StoreOf<MatchSettingsEditor>) {
     self.store = store
   }
 
@@ -117,9 +117,9 @@ public struct MatchSettingsView: View {
   }
 }
 
-struct MatchSettingsView_Previews: PreviewProvider {
+struct MatchSettingsEditorView_Previews: PreviewProvider {
     static var previews: some View {
-      MatchSettingsView(
+      MatchSettingsEditorView(
         store: .init(
           initialState: .init(
             match: .init(
@@ -133,7 +133,7 @@ struct MatchSettingsView_Previews: PreviewProvider {
               "M": .init(name: "MC"),
             ]
           ),
-          reducer: MatchSettingsFeature()
+          reducer: MatchSettingsEditor()
         )
       )
     }

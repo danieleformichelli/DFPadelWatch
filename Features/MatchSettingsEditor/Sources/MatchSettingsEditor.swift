@@ -3,7 +3,7 @@ import Foundation
 import Models
 import Shared
 
-public struct MatchSettingsFeature: ReducerProtocol {
+public struct MatchSettingsEditor: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {

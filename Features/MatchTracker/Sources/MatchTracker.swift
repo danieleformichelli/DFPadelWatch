@@ -3,7 +3,7 @@ import Foundation
 import Models
 import Shared
 
-public struct MatchFeature: ReducerProtocol {
+public struct MatchTracker: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {
@@ -129,7 +129,7 @@ extension Match {
 
   mutating func addPoint(to turn: Turn) throws {
     guard self.winner == nil else {
-      throw MatchFeature.Error.canNotAddPointsToFinishedMatch
+      throw MatchTracker.Error.canNotAddPointsToFinishedMatch
     }
     try self.sets[self.sets.count - 1].addPoint(to: turn, deuce: self.deuce)
     if self.sets.last?.winner != nil {
@@ -178,7 +178,7 @@ extension PadelSet {
 
   mutating func addPoint(to turn: Turn, deuce: Deuce) throws {
     guard self.winner == nil else {
-      throw MatchFeature.Error.canNotAddPointsToFinishedSet
+      throw MatchTracker.Error.canNotAddPointsToFinishedSet
     }
     try self.games[self.games.count - 1].addPoint(to: turn, deuce: deuce, tieBreak: self.isAtTieBreak)
     if self.games.last?.winner != nil {
@@ -230,7 +230,7 @@ extension PadelSet {
 extension Game {
   mutating func addPoint(to turn: Turn, deuce: Deuce, tieBreak: Bool) throws {
     guard self.winner == nil else {
-      throw MatchFeature.Error.canNotAddPointsToFinishedGame
+      throw MatchTracker.Error.canNotAddPointsToFinishedGame
     }
     self.points.append(turn)
     if let winner = self.winner(deuce: deuce, tieBreak: tieBreak) {

@@ -3,9 +3,9 @@ import Models
 import SwiftUI
 
 public struct PlayersView: View {
-  let store: StoreOf<PlayersFeature>
+  let store: StoreOf<Players>
 
-  public init(store: StoreOf<PlayersFeature>) {
+  public init(store: StoreOf<Players>) {
     self.store = store
   }
 
@@ -46,7 +46,7 @@ struct PlayersView_Previews: PreviewProvider {
               "M": .init(name: "MC"),
             ]
           ),
-          reducer: PlayersFeature()
+          reducer: Players()
         )
       )
     }

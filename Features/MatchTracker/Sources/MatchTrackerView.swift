@@ -2,10 +2,10 @@ import ComposableArchitecture
 import Models
 import SwiftUI
 
-public struct MatchView: View {
-  let store: StoreOf<MatchFeature>
+public struct MatchTrackerView: View {
+  let store: StoreOf<MatchTracker>
 
-  public init(store: StoreOf<MatchFeature>) {
+  public init(store: StoreOf<MatchTracker>) {
     self.store = store
   }
 
@@ -69,16 +69,16 @@ public struct MatchView: View {
   }
 }
 
-struct MatchView_Previews: PreviewProvider {
+struct MatchTrackerView_Previews: PreviewProvider {
     static var previews: some View {
-      MatchView(
+      MatchTrackerView(
         store: .init(
           initialState: .init(match: .init(
             teamA: .init(playerA: "GIF", playerB: "MC"),
             teamB: .init(playerA: "DF", playerB: "DF"),
             deuce: .golden
           )),
-          reducer: MatchFeature()
+          reducer: MatchTracker()
         )
       )
     }

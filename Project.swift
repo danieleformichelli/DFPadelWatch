@@ -5,8 +5,18 @@ let models = Feature(name: "Models")
 
 let shared = Feature(name: "Shared")
 
-let match = Feature(
-  name: "Match",
+let home = Feature(
+  name: "Home",
+  hasTests: false,
+  dependencies: [
+    .composableArchitecture,
+    .feature(models),
+    .feature(shared),
+  ]
+)
+
+let matchSettingsEditor = Feature(
+  name: "MatchSettingsEditor",
   hasTests: true,
   dependencies: [
     .composableArchitecture,
@@ -15,8 +25,8 @@ let match = Feature(
   ]
 )
 
-let matchSettings = Feature(
-  name: "MatchSettings",
+let matchTracker = Feature(
+  name: "MatchTracker",
   hasTests: true,
   dependencies: [
     .composableArchitecture,
@@ -36,8 +46,9 @@ let players = Feature(
 )
 
 let allFeatures = [
-  match,
-  matchSettings,
+  home,
+  matchSettingsEditor,
+  matchTracker,
   models,
   players,
   shared,

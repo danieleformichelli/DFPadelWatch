@@ -82,3 +82,8 @@ public struct Match: Equatable {
     self.winner = nil
   }
 }
+
+public enum MatchSettings: Equatable {
+  case newMatch
+  case editMatch(Match.ID)
+}

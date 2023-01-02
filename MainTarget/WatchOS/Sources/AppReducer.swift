@@ -1,48 +1,38 @@
 import ComposableArchitecture
-import Match
-import MatchSettings
+import Home
+import MatchTracker
+import MatchSettingsEditor
 import Models
 import Players
 
 struct DFPadel: ReducerProtocol {
   struct State: Equatable {
-    enum MatchSettings: Equatable {
-      case newMatch
-      case editMatch(Match.ID)
-    }
-
     var matches: [Match.ID: Match]
     var matchSettings: MatchSettings?
     var players: [Player.ID: Player]
+    var shouldShowHistory: Bool
     var shouldShowPlayers: Bool
 
     init() {
       self.matches = [:]
       self.matchSettings = nil
       self.players = [:]
+      self.shouldShowHistory = false
       self.shouldShowPlayers = false
     }
   }
 
   enum Action: Equatable {
-    case didTapNewMatch
-    case didTapHistory
-    case didTapPlayers
-    case match(MatchFeature.Action)
-    case matchSettings(MatchSettingsFeature.Action)
-    case players(PlayersFeature.Action)
+    case home(Home.Action)
+    case match(MatchTracker.Action)
+    case matchSettings(MatchSettingsEditor.Action)
+    case players(Players.Action)
   }
 
   public var body: some ReducerProtocol<State, Action> {
     Reduce { state, action in
       switch action {
-      case .didTapNewMatch:
-        state.matchSettings = .newMatch
-        return .none
-      case .didTapHistory:
-        return .none
-      case .didTapPlayers:
-        state.shouldShowPlayers = true
+      case .home:
         return .none
       case .match(let matchAction):
         switch matchAction {

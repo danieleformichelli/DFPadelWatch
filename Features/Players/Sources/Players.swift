@@ -3,7 +3,7 @@ import Foundation
 import Models
 import Shared
 
-public struct PlayersFeature: ReducerProtocol {
+public struct Players: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {
