@@ -17,16 +17,13 @@ public struct PlayersView: View {
             "Add player",
             text: viewStore.binding(
               get: { _ in player.name },
-              send: .input(.didChangePlayer(player))
+              send: { .input(.didChangePlayer(.init(id: player.id, name: $0))) }
             )
           )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         HStack {
-          Button("Save") {
-            viewStore.send(.input(.didTapSave))
-          }
-          Button("Cancel") {
+          Button("Go back") {
             viewStore.send(.input(.didTapGoBack))
           }
         }
@@ -44,7 +41,8 @@ struct PlayersView_Previews: PreviewProvider {
               "D": .init(name: "DF"),
               "G": .init(name: "GIF"),
               "M": .init(name: "MC"),
-            ]
+            ],
+            shouldShowPlayers: true
           ),
           reducer: Players()
         )

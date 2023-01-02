@@ -25,12 +25,12 @@ public struct MatchTrackerView: View {
           .frame(minWidth: 0, maxWidth: .infinity)
           HStack {
             Spacer()
-            Button { viewStore.send(.input(.didTapUndo))} label: {
+            Button { viewStore.send(.input(.didTapUndo)) } label: {
               Image(systemName: "arrow.uturn.backward.square")
             }
             .buttonStyle(BorderlessButtonStyle())
             .frame(width: 30, height: 30)
-            Button {} label: {
+            Button { viewStore.send(.input(.didTapSettings)) } label: {
               Image(systemName: "ellipsis.circle")
             }
             .buttonStyle(BorderlessButtonStyle())

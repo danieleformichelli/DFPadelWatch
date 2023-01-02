@@ -8,31 +8,31 @@ public struct MatchTracker: ReducerProtocol {
 
   public struct State: Equatable {
     var error: String?
-    let match: Match
+    public var match: Match
+    public var shouldShowMatchSettings: Match?
 
     public init(error: String? = nil, match: Match) {
       self.error = error
       self.match = match
+      self.shouldShowMatchSettings = nil
     }
   }
 
   public enum Action: FeatureAction, Equatable {
+    public typealias DelegateAction = Never
+
     public enum Input: Equatable {
       case didTapAddPoint(Turn)
       case didTapUndo
+      case didTapSettings
     }
 
     public enum Module: Equatable {
       case handleClearError(Match)
     }
 
-    public enum Delegate: Equatable {
-      case handleUpdateMatch(Match)
-    }
-
     case input(Input)
     case module(Module)
-    case delegate(Delegate)
   }
 
   enum Error: LocalizedError {
@@ -61,15 +61,16 @@ public struct MatchTracker: ReducerProtocol {
       case .input(let inputAction):
         switch inputAction {
         case .didTapAddPoint(let turn):
-          var updatedMatch = state.match
-          try updatedMatch.addPoint(to: turn)
-          return Effect(value: Action.delegate(.handleUpdateMatch(updatedMatch)))
+          try state.match.addPoint(to: turn)
+          return .none
         case .didTapUndo:
-          var updatedMatch = state.match
-          if !updatedMatch.undo() {
+          if !state.match.undo() {
             throw Error.canNotUndo
           }
-          return Effect(value: Action.delegate(.handleUpdateMatch(updatedMatch)))
+          return .none
+        case .didTapSettings:
+          state.shouldShowMatchSettings = state.match
+          return .none
         }
       case .module(let moduleAction):
         switch moduleAction {
@@ -77,8 +78,6 @@ public struct MatchTracker: ReducerProtocol {
           state.error = nil
           return .none
         }
-      case .delegate:
-        return .none
       }
     } catch let error {
       state.error = "\(error)"

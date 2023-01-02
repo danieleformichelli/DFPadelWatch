@@ -7,11 +7,11 @@ public struct Home: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {
-    var shouldShowMatchSettings: MatchSettings?
-    var shouldShowHistory: Bool
-    var shouldShowPlayers: Bool
+    public var shouldShowMatchSettings: Match?
+    public var shouldShowHistory: Bool
+    public var shouldShowPlayers: Bool
 
-    public init(shouldShowMatchSettings: MatchSettings?, shouldShowHistory: Bool, shouldShowPlayers: Bool) {
+    public init(shouldShowMatchSettings: Match?, shouldShowHistory: Bool, shouldShowPlayers: Bool) {
       self.shouldShowMatchSettings = shouldShowMatchSettings
       self.shouldShowHistory = shouldShowHistory
       self.shouldShowPlayers = shouldShowPlayers
@@ -41,7 +41,7 @@ public struct Home: ReducerProtocol {
     case .input(let inputAction):
       switch inputAction {
       case .didTapNewMatch:
-        state.shouldShowMatchSettings = .newMatch
+        state.shouldShowMatchSettings = .init(teamA: .init(playerA: "", playerB: ""), teamB: .init(playerA: "", playerB: ""), deuce: .golden)
       case .didTapHistory:
         state.shouldShowHistory = true
       case .didTapPlayers:

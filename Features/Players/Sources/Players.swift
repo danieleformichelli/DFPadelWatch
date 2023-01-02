@@ -7,31 +7,27 @@ public struct Players: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {
-    var players: [Player.ID: Player]
+    public var players: [Player.ID: Player]
     var newPlayer: Player
+    public var shouldShowPlayers: Bool
 
-    public init(players: [Player.ID: Player]) {
+    public init(players: [Player.ID: Player], shouldShowPlayers: Bool) {
       self.players = players
       self.newPlayer = .init(name: "")
+      self.shouldShowPlayers = shouldShowPlayers
     }
   }
 
   public enum Action: FeatureAction, Equatable {
     public typealias ModuleAction = Never
+    public typealias DelegateAction = Never
 
     public enum Input: Equatable {
       case didChangePlayer(Player)
-      case didTapSave
       case didTapGoBack
     }
 
-    public enum Delegate: Equatable {
-      case handleSavePlayers([Player.ID: Player])
-      case handleGoBack
-    }
-
     case input(Input)
-    case delegate(Delegate)
   }
 
   public func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
@@ -39,19 +35,15 @@ public struct Players: ReducerProtocol {
     case .input(let inputAction):
       switch inputAction {
       case .didChangePlayer(let player):
+        state.players[player.id] = player.name != "" ? player : nil
         if player.id == state.newPlayer.id {
-          state.newPlayer.name = player.name
-        } else {
-          state.players[player.id] = player.name != "" ? player : nil
+          state.newPlayer = .init(name: "")
         }
         return .none
-      case .didTapSave:
-        return Effect(value: .delegate(.handleSavePlayers(state.players)))
       case .didTapGoBack:
-        return Effect(value: .delegate(.handleGoBack))
+        state.shouldShowPlayers = false
+        return .none
       }
-    case .delegate:
-      return .none
     }
   }
 }

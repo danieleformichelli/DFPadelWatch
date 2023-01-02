@@ -17,7 +17,7 @@ public struct MatchSettingsEditorView: View {
             Text("Team A")
             Picker(
               selection: viewStore.binding(
-                get: { $0.players[$0.match.teamA.playerA]?.name ?? "Player A" },
+                get: { $0.players[$0.match?.teamA.playerA ?? ""]?.name ?? "Player A" },
                 send: { .input(.didChangePlayer(team: .a, player: .a, id: $0)) }
               ),
               label: EmptyView()
@@ -34,7 +34,7 @@ public struct MatchSettingsEditorView: View {
             .frame(height: 50)
             Picker(
               selection: viewStore.binding(
-                get: { $0.players[$0.match.teamA.playerB]?.name ?? "Player B" },
+                get: { $0.players[$0.match?.teamA.playerB ?? ""]?.name ?? "Player B" },
                 send: { .input(.didChangePlayer(team: .a, player: .b, id: $0)) }
               ),
               label: EmptyView()
@@ -53,7 +53,7 @@ public struct MatchSettingsEditorView: View {
             Text("Team B")
             Picker(
               selection: viewStore.binding(
-                get: { $0.players[$0.match.teamB.playerA]?.name ?? "Player A" },
+                get: { $0.players[$0.match?.teamB.playerA ?? ""]?.name ?? "Player A" },
                 send: { .input(.didChangePlayer(team: .b, player: .a, id: $0)) }
               ),
               label: EmptyView()
@@ -69,7 +69,7 @@ public struct MatchSettingsEditorView: View {
             .frame(height: 50)
             Picker(
               selection: viewStore.binding(
-                get: { $0.players[$0.match.teamB.playerB]?.name ?? "Player B" },
+                get: { $0.players[$0.match?.teamB.playerB ?? ""]?.name ?? "Player B" },
                 send: { .input(.didChangePlayer(team: .b, player: .b, id: $0)) }
               ),
               label: EmptyView()
@@ -86,7 +86,7 @@ public struct MatchSettingsEditorView: View {
           }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         }
         Picker("Deuce", selection: viewStore.binding(
-          get: \.match.deuce,
+          get: { $0.match?.deuce ?? .golden },
           send: { .input(.didChangeDeuce($0)) }
         )) {
           ForEach(Deuce.allCases, id: \.self) { deuce in
@@ -127,6 +127,7 @@ struct MatchSettingsEditorView_Previews: PreviewProvider {
               teamB: .init(playerA: "D", playerB: "D"),
               deuce: .golden
             ),
+            matches: [:],
             players: [
               "D": .init(name: "DF"),
               "G": .init(name: "GIF"),
