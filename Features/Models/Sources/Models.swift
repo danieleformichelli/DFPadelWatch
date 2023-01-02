@@ -1,13 +1,13 @@
 import Foundation
 
-public struct Player: Equatable {
+public struct Player: Equatable, Identifiable {
   public typealias ID = String
 
   public let id: Self.ID
   public var name: String
 
-  public init(name: String) {
-    self.id = UUID().uuidString
+  public init(id: String = UUID().uuidString, name: String) {
+    self.id = id
     self.name = name
   }
 }

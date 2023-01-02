@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Match
 import MatchSettings
 import Models
+import Players
 import SwiftUI
 
 @main
@@ -14,13 +15,22 @@ struct DFPadelApp: App {
         Group {
           if let match = viewStore.shouldShowMatchSettings {
             MatchSettingsView(store: self.store.scope(
-              state: { _ in .init(match: match, players: viewStore.players) },
+              state: { .init(match: match, players: $0.players) },
               action: { .matchSettings($0) }
             ))
+          } else if viewStore.shouldShowPlayers {
+            PlayersView(store: self.store.scope(
+              state: { .init(players: $0.players) },
+              action: { .players($0) }
+            ))
           } else if let match = viewStore.currentMatch {
-            MatchView(store: .init(initialState: .init(match: match), reducer: MatchFeature()))
+            MatchView(store: self.store.scope(
+              state: { _ in .init(match: match) },
+              action: { .match($0) }
+            ))
           } else {
             Button("New match", action: { viewStore.send(.didTapNewMatch) })
+            Button("Players", action: { viewStore.send(.didTapPlayers) })
             Button("History", action: { viewStore.send(.didTapHistory) })
           }
         }

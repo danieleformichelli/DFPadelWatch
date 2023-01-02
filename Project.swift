@@ -25,11 +25,22 @@ let matchSettings = Feature(
   ]
 )
 
+let players = Feature(
+  name: "Players",
+  hasTests: false,
+  dependencies: [
+    .composableArchitecture,
+    .feature(models),
+    .feature(shared),
+  ]
+)
+
 let allFeatures = [
-  models,
-  shared,
   match,
   matchSettings,
+  models,
+  players,
+  shared,
 ]
 
 let mainTarget = Target(
@@ -42,10 +53,7 @@ let mainTarget = Target(
   ],
   dependencies: [
     .composableArchitecture,
-    .feature(match),
-    .feature(matchSettings),
-    .feature(models),
-  ],
+  ] + allFeatures.map { .feature($0) },
   settings: .settings(
     base: [
       "GENERATE_INFOPLIST_FILE": true,
