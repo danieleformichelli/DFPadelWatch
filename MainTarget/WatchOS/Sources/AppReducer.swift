@@ -15,6 +15,28 @@ struct DFPadel: ReducerProtocol {
 
   public var body: some ReducerProtocol<State, Action> {
     CombineReducers {
+      Reduce { state, action in
+        switch action {
+        case .home(let homeAction):
+          switch homeAction {
+          case .input:
+            return .none
+          case .delegate(let homeDelegateAction):
+            switch homeDelegateAction {
+            case .handleStartNewMath:
+              state.shouldShowMatchSettings = .init(teamA: .init(playerA: "", playerB: ""), teamB: .init(playerA: "", playerB: ""), deuce: .golden)
+              return .none
+            case .handleShowHistory:
+              return .none
+            case .handleShowPlayers:
+              state.playersState.shouldShowPlayers = true
+              return .none
+            }
+          }
+        case .matchTracker, .matchSettingsEditor, .players:
+          return .none
+        }
+      }
       Scope(state: \.home, action: /Action.home) {
         Home()
       }

@@ -46,7 +46,7 @@ public struct MatchSettingsEditor: ReducerProtocol {
         case (.b, .a):
           state.match?.teamB.playerA = id
         case (.b, .b):
-          state.match?.teamA.playerB = id
+          state.match?.teamB.playerB = id
         }
         return .none
       case .didChangeDeuce(let deuce):

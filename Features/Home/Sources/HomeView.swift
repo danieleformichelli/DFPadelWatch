@@ -22,7 +22,7 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
       HomeView(
         store: .init(
-          initialState: .init(shouldShowMatchSettings: nil, shouldShowHistory: false, shouldShowPlayers: false),
+          initialState: .init(),
           reducer: Home()
         )
       )

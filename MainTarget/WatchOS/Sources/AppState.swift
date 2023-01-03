@@ -7,17 +7,19 @@ import Players
 extension DFPadel {
   struct State: Equatable {
     var matches: [Match.ID: Match]
-    var players: [Player.ID: Player]
+    var playersState: Players.State
     var shouldShowMatchSettings: Match?
     var shouldShowHistory: Bool
-    var shouldShowPlayers: Bool
+
+    var players: [Player.ID: Player] {
+      return self.playersState.players
+    }
 
     init() {
       self.matches = [:]
-      self.players = [:]
+      self.playersState = .init()
       self.shouldShowMatchSettings = nil
       self.shouldShowHistory = false
-      self.shouldShowPlayers = false
     }
   }
 }
@@ -25,16 +27,9 @@ extension DFPadel {
 extension DFPadel.State {
   var home: Home.State {
     get {
-      return .init(
-        shouldShowMatchSettings: self.shouldShowMatchSettings,
-        shouldShowHistory: self.shouldShowHistory,
-        shouldShowPlayers: self.shouldShowPlayers
-      )
+      return .init()
     }
     set {
-      self.shouldShowMatchSettings = newValue.shouldShowMatchSettings
-      self.shouldShowHistory = newValue.shouldShowHistory
-      self.shouldShowPlayers = newValue.shouldShowPlayers
     }
   }
 }
@@ -68,18 +63,6 @@ extension DFPadel.State {
 
       self.matches[newValue.match.id] = newValue.match
       self.shouldShowMatchSettings = newValue.shouldShowMatchSettings
-    }
-  }
-}
-
-extension DFPadel.State {
-  var playersState: Players.State {
-    get {
-      return .init(players: self.players, shouldShowPlayers: self.shouldShowPlayers)
-    }
-    set {
-      self.players = newValue.players
-      self.shouldShowPlayers = newValue.shouldShowPlayers
     }
   }
 }

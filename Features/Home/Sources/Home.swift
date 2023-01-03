@@ -7,15 +7,7 @@ public struct Home: ReducerProtocol {
   public init() {}
 
   public struct State: Equatable {
-    public var shouldShowMatchSettings: Match?
-    public var shouldShowHistory: Bool
-    public var shouldShowPlayers: Bool
-
-    public init(shouldShowMatchSettings: Match?, shouldShowHistory: Bool, shouldShowPlayers: Bool) {
-      self.shouldShowMatchSettings = shouldShowMatchSettings
-      self.shouldShowHistory = shouldShowHistory
-      self.shouldShowPlayers = shouldShowPlayers
-    }
+    public init() {}
   }
 
   public enum Action: FeatureAction, Equatable {
@@ -28,8 +20,9 @@ public struct Home: ReducerProtocol {
     }
 
     public enum Delegate: Equatable {
-      case handleSavePlayers([Player.ID: Player])
-      case handleGoBack
+      case handleStartNewMath
+      case handleShowHistory
+      case handleShowPlayers
     }
 
     case input(Input)
@@ -41,13 +34,12 @@ public struct Home: ReducerProtocol {
     case .input(let inputAction):
       switch inputAction {
       case .didTapNewMatch:
-        state.shouldShowMatchSettings = .init(teamA: .init(playerA: "", playerB: ""), teamB: .init(playerA: "", playerB: ""), deuce: .golden)
+        return Effect(value: .delegate(.handleStartNewMath))
       case .didTapHistory:
-        state.shouldShowHistory = true
+        return Effect(value: .delegate(.handleShowHistory))
       case .didTapPlayers:
-        state.shouldShowPlayers = true
+        return Effect(value: .delegate(.handleShowPlayers))
       }
-      return .none
     case .delegate:
       return .none
     }

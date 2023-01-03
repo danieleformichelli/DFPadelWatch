@@ -19,7 +19,7 @@ struct DFPadelApp: App {
               state: { _ in matchSettingsEditor },
               action: { .matchSettingsEditor($0) }
             ))
-          } else if viewStore.shouldShowPlayers {
+          } else if viewStore.playersState.shouldShowPlayers {
             PlayersView(store: self.store.scope(
               state: \.playersState,
               action: { .players($0) }

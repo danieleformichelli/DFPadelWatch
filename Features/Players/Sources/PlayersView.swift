@@ -12,23 +12,41 @@ public struct PlayersView: View {
   public var body: some View {
     WithViewStore(self.store) { viewStore in
       VStack {
-        List(viewStore.players.values.sorted { $0.name < $1.name } + [viewStore.newPlayer]) { player in
+        List {
+          ForEach(.constant(viewStore.sortedEditingPlayers)) { player in
+            Text(player.name.wrappedValue)
+          }
+          .onDelete { indexRange in
+            if let index = indexRange.first {
+              let deletedID = viewStore.sortedEditingPlayers[index].id
+              viewStore.send(.input(.didDeletePlayer(deletedID)))
+            }
+          }
           TextField(
             "Add player",
             text: viewStore.binding(
-              get: { _ in player.name },
-              send: { .input(.didChangePlayer(.init(id: player.id, name: $0))) }
+              get: \.newPlayer,
+              send: { .input(.didAddPlayer($0)) }
             )
           )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         HStack {
-          Button("Go back") {
-            viewStore.send(.input(.didTapGoBack))
+          Button("Save") {
+            viewStore.send(.input(.didTapSave))
+          }
+          Button("Cancel") {
+            viewStore.send(.input(.didTapCancel))
           }
         }
       }
     }
+  }
+}
+
+extension Players.State {
+  var sortedEditingPlayers: [Player] {
+    return self.editingPlayers?.values.sorted { $0.name < $1.name } ?? []
   }
 }
 
@@ -42,7 +60,12 @@ struct PlayersView_Previews: PreviewProvider {
               "G": .init(name: "GIF"),
               "M": .init(name: "MC"),
             ],
-            shouldShowPlayers: true
+            editingPlayers: [
+              "D": .init(name: "DF"),
+              "G": .init(name: "GIF"),
+              "M": .init(name: "MC"),
+            ],
+            newPlayer: ""
           ),
           reducer: Players()
         )

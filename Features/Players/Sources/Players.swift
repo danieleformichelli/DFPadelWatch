@@ -8,13 +8,31 @@ public struct Players: ReducerProtocol {
 
   public struct State: Equatable {
     public var players: [Player.ID: Player]
-    var newPlayer: Player
-    public var shouldShowPlayers: Bool
+    var editingPlayers: [Player.ID: Player]?
+    var newPlayer: String
 
-    public init(players: [Player.ID: Player], shouldShowPlayers: Bool) {
+    public var shouldShowPlayers: Bool {
+      get {
+        self.editingPlayers != nil
+      }
+      set {
+        if newValue {
+          self.editingPlayers = self.players
+          self.newPlayer = ""
+        } else {
+          self.editingPlayers = nil
+        }
+      }
+    }
+
+    public init() {
+      self.init(players: [:], editingPlayers: nil, newPlayer: "")
+    }
+
+    init(players: [Player.ID: Player], editingPlayers: [Player.ID: Player]?, newPlayer: String) {
       self.players = players
-      self.newPlayer = .init(name: "")
-      self.shouldShowPlayers = shouldShowPlayers
+      self.editingPlayers = editingPlayers
+      self.newPlayer = newPlayer
     }
   }
 
@@ -23,8 +41,10 @@ public struct Players: ReducerProtocol {
     public typealias DelegateAction = Never
 
     public enum Input: Equatable {
-      case didChangePlayer(Player)
-      case didTapGoBack
+      case didAddPlayer(String)
+      case didDeletePlayer(Player.ID)
+      case didTapSave
+      case didTapCancel
     }
 
     case input(Input)
@@ -34,13 +54,21 @@ public struct Players: ReducerProtocol {
     switch action {
     case .input(let inputAction):
       switch inputAction {
-      case .didChangePlayer(let player):
-        state.players[player.id] = player.name != "" ? player : nil
-        if player.id == state.newPlayer.id {
-          state.newPlayer = .init(name: "")
-        }
+      case .didAddPlayer(let name):
+        guard name != "" && !(state.editingPlayers?.values.contains(where: { $0.name == name }) ?? false) else { return .none }
+        let player = Player(name: name)
+        state.editingPlayers?[player.id] = player
+        state.newPlayer = ""
         return .none
-      case .didTapGoBack:
+      case .didDeletePlayer(let id):
+        state.editingPlayers?[id] = nil
+        return .none
+      case .didTapSave:
+        guard let editingPlayers = state.editingPlayers else { return .none }
+        state.players = editingPlayers
+        state.shouldShowPlayers = false
+        return .none
+      case .didTapCancel:
         state.shouldShowPlayers = false
         return .none
       }

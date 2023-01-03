@@ -22,7 +22,7 @@ public struct MatchSettingsEditorView: View {
               ),
               label: EmptyView()
             ) {
-              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.id) { player in
+              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.name) { player in
                 HStack {
                   Text(player.name)
                   Spacer()
@@ -39,7 +39,7 @@ public struct MatchSettingsEditorView: View {
               ),
               label: EmptyView()
             ) {
-              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.id) { player in
+              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.name) { player in
                 HStack {
                   Text(player.name)
                   Spacer()
@@ -58,7 +58,7 @@ public struct MatchSettingsEditorView: View {
               ),
               label: EmptyView()
             ) {
-              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.id) { player in
+              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.name) { player in
                 HStack {
                   Text(player.name)
                   Spacer()
@@ -74,7 +74,7 @@ public struct MatchSettingsEditorView: View {
               ),
               label: EmptyView()
             ) {
-              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.id) { player in
+              ForEach(viewStore.state.players.values.sorted(by: { $0.name < $1.name }), id: \.name) { player in
                 HStack {
                   Text(player.name)
                   Spacer()
